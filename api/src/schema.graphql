@@ -99,13 +99,13 @@ type User {
 #     itemById(itemId: ID!): Item @hasScope(scopes: ["Item:Read"])
 # }
 
-extend type User {
-    password: String! @auth(rules: [
-        {
-            OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }]
-        }
-    ])
-}
+# extend type User {
+#     password: String! @auth(rules: [
+#         {
+#             OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }]
+#         }
+#     ])
+# }
 
 
 type	HighPower	#	Высшая сила	High power	  
