@@ -1,0 +1,233 @@
+scalar Point
+scalar DateTime
+scalar PointInput
+# enum Role {
+#   JUDE
+#   EMPIRE
+#   JEDI
+# }
+
+
+type User {
+  userId: ID!
+  name: String
+  secondName: String
+  fullName: String
+  age: Int
+  bday: DateTime
+  email: String
+  emails: String
+  verified: Int
+
+
+# # #  # Scoring
+  score: Int
+  socialScore: Int
+  applicationScore: Int
+  collectionScore: Int
+  behavioralScore: Int
+  fraudScore: Int
+# # #
+#	# definition:String	#	Определение	Definition
+	symbol:String	#	Символ	Symbol
+	class:String	#	Класс	Class
+	actor:String	#	Актор	Actor
+	#		#	#	#
+#	lifeAndDeath:String	#	Жизнь и смерть	Life and death
+	isDead:Int	#	Является мертвым	Is dead
+	mayBeDead:Int	#	Может стать мертвым	May be dead
+	deadAnnouncementProcess:String	#	Процесс объявления мертвым	Dead announcement process
+	theAnnouncementProcessIsAlive:String	#	Процесс объявления живым	The announcement process is alive
+	#		#	#	#
+	#		#	#	#
+#	registration,Confirmation,Demand:String	#	Регистрация, подтверждение, востребование	Registration, confirmation, demand
+	registration:String	#	Регистрация	registration
+	confirmation:String	#	Подтверждение	Confirmation
+	demand:String	#	Востребование	Demand
+	#		#	#	#
+	#		#	#	#
+#	belongingToJurisdiction:String	#	Принадлежность к юрисдикции	Belonging to jurisdiction
+	defaultJurisdiction:String	#	Юрисдикция по умолчанию	Default jurisdiction
+	currentJurisdiction:String	#	Текущая юрисдикция	Current jurisdiction
+	#		#	#	#
+#	whatRolesCanHave:String	#	Какие роли может иметь	What roles can have
+	mayHaveCulturalRepresentatives:String	#	Может иметь культурных представителей	May have cultural representatives
+	mayHavePropertyRepresentatives:String	#	Может иметь имущественных представителей	May have property representatives
+	canBeTheOwner:String	#	Может ли быть владельцем?	Can be the owner?
+	canHaveTheOwner:String	#	Может ли иметь владельца	Can have the owner
+	canBeTransmittedToAnotherOwner:String	#	Может ли быть передана другому владельцу	Can be transmitted to another owner
+	canBeBeneficiaries:String	#	Может ли иметь бенефициаров	Can be beneficiaries
+	managingOrgan:String	#	Управляющий орган	Managing Organ
+	legislator:String	#	Законодатель	Legislator
+	referee:String	#	Судья	Referee
+	prosecutor:String	#	Прокурор	Prosecutor
+	positionsLikeQueenAndPresident:String	#	Должности вроде королевы и президента?	Positions like Queen and President?
+	canHaveAKeeper:String	#	Может ли иметь хранителя	Can have a keeper
+	#		#	#	#
+#	whatRolesCanOccupy:String	#	Какие роли может занимать	What roles can occupy
+	bePlain:String	#	Быть истцом	Be plain
+	beADefendant:String	#	Быть ответчиком	Be a defendant
+	beAProsecutor:String	#	Быть прокурором	Be a prosecutor
+	beJudge:String	#	Быть судьей	Be judge
+	beLegislative:String	#	Быть законодателем	Be legislative
+	beARepresentativeOfThePlaintiff:String	#	Быть представителем истца	Be a representative of the plaintiff
+	beARepresentativeOfTheDefendant:String	#	Быть представителем ответчика	Be a representative of the defendant
+	beAGamingRespondent:String	#	Быть игровым представителем ответчика	Be a gaming respondent
+	beAGameRepresentativeOfThePlaintiff:String	#	Быть игровым представителем истца	Be a game representative of the plaintiff
+	beACulturalRepresentative:String	#	Быть культурным представителем	Be a cultural representative
+	beAPropertyRepresentative:String	#	Быть имущественным представителем	Be a property representative
+	beKeeper:String	#	Быть хранителем	Be keeper
+
+  worksAt: [Business] @relationship(type: "WORKS_AT", direction: OUT)
+  reviews: [Review] @relationship(type: "WROTE", direction: OUT)
+  avgStars: Float
+    @cypher(
+      statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.stars))"
+    )
+  numReviews: Int
+    @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN COUNT(r)")
+  recommendations(first: Int = 3): [Business]
+    @cypher(
+      statement: "MATCH (this)-[:WROTE]->(r:Review)-[:REVIEWS]->(:Business)<-[:REVIEWS]-(:Review)<-[:WROTE]-(:User)-[:WROTE]->(:Review)-[:REVIEWS]->(rec:Business) WHERE NOT EXISTS( (this)-[:WROTE]->(:Review)-[:REVIEWS]->(rec) ) WITH rec, COUNT(*) AS num ORDER BY num DESC LIMIT $first RETURN rec"
+    )
+
+
+}
+type Query {
+    userById(userId: ID!): User @hasScope(scopes: ["User:Read"])
+    itemById(itemId: ID!): Item @hasScope(scopes: ["Item:Read"])
+}
+
+extend type User {
+    password: String! @auth(rules: [
+        {
+            OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }]
+        }
+    ])
+}
+
+
+type	HighPower	#	Высшая сила	High power	  
+{id: ID!}
+type	ImaginaryPersonality	#	Воображаемая личность	Imaginary personality	
+{id: ID!}
+type	User	#	Человек пользователь	User	
+{id: ID!}
+type	UnregisteredPublicFigure	#	Незареганная публичная личность	Unregistered public figure	
+{id: ID!}
+type	UnregisteredThirdParty	#	Незареганное третье лицо	Unregistered third party	
+{id: ID!}
+type	DeceasedUser	#	Умерший пользователь	Deceased user	
+{id: ID!}
+type	Bot	#	Бот	Bot	
+{id: ID!}
+type	AutonomousProgram	#	Автономная программа	Autonomous program	
+{id: ID!}
+type	Ai	#	Автономный полный интеллект	AI	
+{id: ID!}
+type	MemoryOfOrganization	#	Memory of organization	Memory of organization	
+{id: ID!}
+type	VirtualCountry	#	Виртуальное государство	Virtual Country	
+{id: ID!}
+type	Country	#	Государство	Country	
+{id: ID!}
+type	MemoryOfCountry	#	Memory of country	Memory of country	
+{id: ID!}
+type	Animal	#	Животное	Animal	
+{id: ID!}
+type	MemoryOfAnimal	#	Memory of animal	Memory of animal	
+{id: ID!}
+type	Administrator	#	Admin разных уровней	Administrator	
+{id: ID!}
+
+# type	Organization	#	Организация	Organization	
+# {id: ID!}
+
+
+type Business {
+  businessId: ID!
+  name: String!
+  address: String
+  city: String
+  state: String
+  location: Point
+  employees: [User] @relationship(type: "WORKS_AT", direction: IN)
+  avgStars: Float
+    @cypher(
+      statement: "MATCH (this)<-[:REVIEWS]-(r:Review) RETURN coalesce(avg(r.stars),0.0)"
+    )
+  reviews: [Review] @relationship(type: "REVIEWS", direction: IN)
+  categories: [Category] @relationship(type: "IN_CATEGORY", direction: OUT)
+}
+
+type Review {
+  reviewId: ID!
+  stars: Float
+  text: String
+  date: DateTime
+  business: Business @relationship(type: "REVIEWS", direction: OUT)
+  user: User @relationship(type: "WROTE", direction: IN)
+}
+
+type Category {
+  name: ID!
+  businesses: [Business] @relationship(type: "IN_CATEGORY", direction: IN)
+}
+
+type RatingCount @exclude {
+  stars: Float!
+  count: Int!
+}
+
+type Mutation {
+  mergeBusinessCategory(categories: [String!]!, businessId: ID!): Business
+    @cypher(
+      statement: "MATCH (b:Business {businessId: $businessId}) UNWIND $categories AS cat MERGE (c:Category {name: cat}) MERGE (b)-[:IN_CATEGORY]->(c) RETURN b"
+    )
+    
+  mergeUser(
+    name: String!, 
+    userId: ID!, 
+    age: Int
+    email: String
+    score: Int
+    isDead: Int
+    mayBeDead: Int
+    class: String
+    ): User
+    @cypher(
+      statement: """
+      MERGE (u:User {userId: $userId})
+      ON CREATE SET u.name = $name, u.age = $age, u.email = $email, u.score = $score, u.isDead = $isDead, u.mayBeDead = $mayBeDead, u.class = $class
+      RETURN u
+      """
+    )
+  mergeBusiness(
+    businessId: ID!
+    name: String!
+    address: String!
+    city: String!
+    state: String!
+    latitude: Float!
+    longitude: Float!
+  ): Business
+    @cypher(
+      statement: """
+      MERGE (b:Business {businessId: $businessId})
+      ON CREATE SET b.name = $name,
+                    b.address = $address,
+                    b.city = $city,
+                    b.state = $state,
+                    b.location = Point({latitude: $latitude, longitude: $longitude})
+      RETURN b
+      """
+    )
+}
+
+type Query {
+  userCount: Int! @cypher(statement: "MATCH (u:User) RETURN COUNT(u)")
+  ratingsCount: [RatingCount]
+    @cypher(
+      statement: "MATCH (r:Review) WITH r.stars AS stars, COUNT(*) AS count ORDER BY stars RETURN {stars: stars, count: count}"
+    )
+}
