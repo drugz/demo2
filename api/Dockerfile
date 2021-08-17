@@ -4,8 +4,8 @@ RUN mkdir -p /app
 WORKDIR /app
 
 COPY package.json .
-RUN npm install graphql
-RUN npm install
+# RUN npm install graphql
+RUN npm i
 COPY . .
 # RUN npm run seedDb
 
