@@ -2,7 +2,7 @@ scalar Point
 scalar DateTime
 scalar PointInput
 # enum Role {
-#   JUDE
+#   JUDGE
 #   EMPIRE
 #   JEDI
 # }
@@ -17,7 +17,7 @@ type User {
   bday: DateTime
   email: String
   emails: String
-  verified: Int
+  verified: Boolean
 
 
 # # #  # Scoring
@@ -34,8 +34,8 @@ type User {
 	actor:String	#	Актор	Actor
 	#		#	#	#
 #	lifeAndDeath:String	#	Жизнь и смерть	Life and death
-	isDead:Int	#	Является мертвым	Is dead
-	mayBeDead:Int	#	Может стать мертвым	May be dead
+	isDead:Boolean	#	Является мертвым	Is dead
+	mayBeDead:Boolean	#	Может стать мертвым	May be dead
 	deadAnnouncementProcess:String	#	Процесс объявления мертвым	Dead announcement process
 	theAnnouncementProcessIsAlive:String	#	Процесс объявления живым	The announcement process is alive
 	#		#	#	#
@@ -93,10 +93,11 @@ type User {
 
 
 }
-type Query {
-    userById(userId: ID!): User @hasScope(scopes: ["User:Read"])
-    itemById(itemId: ID!): Item @hasScope(scopes: ["Item:Read"])
-}
+
+# type Query {
+#     userById(userId: ID!): User @hasScope(scopes: ["User:Read"])
+#     itemById(itemId: ID!): Item @hasScope(scopes: ["Item:Read"])
+# }
 
 extend type User {
     password: String! @auth(rules: [
@@ -191,8 +192,8 @@ type Mutation {
     age: Int
     email: String
     score: Int
-    isDead: Int
-    mayBeDead: Int
+    isDead: Boolean
+    mayBeDead: Boolean
     class: String
     ): User
     @cypher(

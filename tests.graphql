@@ -12,8 +12,8 @@ mutation {
     age: 36, 
     email:"oleg@gmail.com",
     score: 1000,
-    isDead:0,
-    mayBeDead:1,
+    isDead:false,
+    mayBeDead:true,
     class:"Сurator") {
     userId
     name
@@ -36,8 +36,8 @@ mutation {
       age: 86
       email: "sara@gmail.com"
       score: 100
-      isDead: 0
-      mayBeDead: 1
+      isDead: false
+      mayBeDead: true
       class: "Сurator"
     }
   ) {
@@ -59,8 +59,8 @@ mutation {
       age: 17
       email: "sara@gmail.com"
       score: 100
-      isDead: 0
-      mayBeDead: 1
+      isDead: false
+      mayBeDead: true
       class: "Сurator"
     }
   ) {
@@ -88,8 +88,8 @@ mutation {
       age: 86
       email: "sara@gmail.com"
       score: 100
-      isDead: 0
-      mayBeDead: 1
+      isDead: false
+      mayBeDead: true
       class: "Сurator"
     }
   ) {
@@ -135,8 +135,8 @@ mutation {
       age: 860
       email: "lara@gmail.com"
       score: 100
-      isDead: 1
-      mayBeDead: 0
+      isDead: true
+      mayBeDead: false
       class: "Сurator"
     }
   ) {
